@@ -29,8 +29,8 @@ pub unsafe fn d2s_buffered_n(f: f64, result: *mut u8) -> usize {
     }
 
     if ieee_exponent == 0 && ieee_mantissa == 0 {
-        ptr::copy_nonoverlapping(b"0.0".as_ptr(), result.offset(index), 3);
-        return sign as usize + 3;
+        ptr::copy_nonoverlapping(b"0".as_ptr(), result.offset(index), 1);
+        return sign as usize + 1;
     }
 
     let v = d2d(ieee_mantissa, ieee_exponent);
@@ -40,22 +40,26 @@ pub unsafe fn d2s_buffered_n(f: f64, result: *mut u8) -> usize {
     let kk = length + k; // 10^(kk-1) <= v < 10^kk
     debug_assert!(k >= -324);
 
-    if 0 <= k && kk <= 16 {
-        // 1234e7 -> 12340000000.0
+    // Mapping between ryu (left) and ECMAScript (right)
+    // v.mantissa <=> s
+    // length <=> k
+    // k <=> n - k
+    // kk <=> n
+
+    if length <= kk && kk <= 21 {
+        // 1234e7 -> 12340000000
         write_mantissa_long(v.mantissa, result.offset(index + length));
         for i in length..kk {
             *result.offset(index + i) = b'0';
         }
-        *result.offset(index + kk) = b'.';
-        *result.offset(index + kk + 1) = b'0';
-        index as usize + kk as usize + 2
-    } else if 0 < kk && kk <= 16 {
+        index as usize + kk as usize
+    } else if 0 < kk && kk <= 21 {
         // 1234e-2 -> 12.34
         write_mantissa_long(v.mantissa, result.offset(index + length + 1));
         ptr::copy(result.offset(index + 1), result.offset(index), kk as usize);
         *result.offset(index + kk) = b'.';
         index as usize + length as usize + 1
-    } else if -5 < kk && kk <= 0 {
+    } else if -6 < kk && kk <= 0 {
         // 1234e-6 -> 0.001234
         *result.offset(index) = b'0';
         *result.offset(index + 1) = b'.';
@@ -66,12 +70,12 @@ pub unsafe fn d2s_buffered_n(f: f64, result: *mut u8) -> usize {
         write_mantissa_long(v.mantissa, result.offset(index + length + offset));
         index as usize + length as usize + offset as usize
     } else if length == 1 {
-        // 1e30
+        // 1e+30
         *result.offset(index) = b'0' + v.mantissa as u8;
         *result.offset(index + 1) = b'e';
         index as usize + 2 + write_exponent3(kk - 1, result.offset(index + 2))
     } else {
-        // 1234e30 -> 1.234e33
+        // 1234e30 -> 1.234e+33
         write_mantissa_long(v.mantissa, result.offset(index + length + 1));
         *result.offset(index) = *result.offset(index + 1);
         *result.offset(index + 1) = b'.';
@@ -97,8 +101,8 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
     }
 
     if ieee_exponent == 0 && ieee_mantissa == 0 {
-        ptr::copy_nonoverlapping(b"0.0".as_ptr(), result.offset(index), 3);
-        return sign as usize + 3;
+        ptr::copy_nonoverlapping(b"0".as_ptr(), result.offset(index), 1);
+        return sign as usize + 1;
     }
 
     let v = f2d(ieee_mantissa, ieee_exponent);
@@ -108,8 +112,14 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
     let kk = length + k; // 10^(kk-1) <= v < 10^kk
     debug_assert!(k >= -45);
 
-    if 0 <= k && kk <= 13 {
-        // 1234e7 -> 12340000000.0
+    // Mapping between ryu (left) and ECMAScript (right)
+    // v.mantissa <=> s
+    // length <=> k
+    // k <=> n - k
+    // kk <=> n
+
+    if length <= kk && kk <= 21 {
+        // 1234e7 -> 12340000000
         write_mantissa(v.mantissa, result.offset(index + length));
         for i in length..kk {
             *result.offset(index + i) = b'0';
@@ -117,7 +127,7 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
         *result.offset(index + kk) = b'.';
         *result.offset(index + kk + 1) = b'0';
         index as usize + kk as usize + 2
-    } else if 0 < kk && kk <= 13 {
+    } else if 0 < kk && kk <= 21 {
         // 1234e-2 -> 12.34
         write_mantissa(v.mantissa, result.offset(index + length + 1));
         ptr::copy(result.offset(index + 1), result.offset(index), kk as usize);
@@ -134,12 +144,12 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
         write_mantissa(v.mantissa, result.offset(index + length + offset));
         index as usize + length as usize + offset as usize
     } else if length == 1 {
-        // 1e30
+        // 1e+30
         *result.offset(index) = b'0' + v.mantissa as u8;
         *result.offset(index + 1) = b'e';
         index as usize + 2 + write_exponent2(kk - 1, result.offset(index + 2))
     } else {
-        // 1234e30 -> 1.234e33
+        // 1234e30 -> 1.234e+33
         write_mantissa(v.mantissa, result.offset(index + length + 1));
         *result.offset(index) = *result.offset(index + 1);
         *result.offset(index + 1) = b'.';

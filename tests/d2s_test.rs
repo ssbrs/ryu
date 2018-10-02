@@ -40,14 +40,18 @@ fn pretty(f: f64) -> String {
 #[test]
 fn test_ryu() {
     check!(3E-1, 0.3);
-    check!(1.234E15, 1234000000000000.0);
-    check!(1.234E16, 1.234e16);
+
+    assert_eq!(1.234E20, 123400000000000000000.0);
+    assert_eq!(print(1.234E20), stringify!(1.234E20));
+    assert_eq!(pretty(123400000000000000000f64), stringify!(123400000000000000000));
+
+    check!(1.234E21, 1.234e+21);
     check!(2.71828E0, 2.71828);
-    check!(1.1E128, 1.1e128);
+    check!(1.1E128, 1.1e+128);
     check!(1.1E-64, 1.1e-64);
     check!(2.718281828459045E0, 2.718281828459045);
     check!(5E-324, 5e-324);
-    check!(1.7976931348623157E308, 1.7976931348623157e308);
+    check!(1.7976931348623157E308, 1.7976931348623157e+308);
 }
 
 #[test]
@@ -73,10 +77,22 @@ fn test_non_finite() {
 
 #[test]
 fn test_basic() {
-    check!(0E0, 0.0);
-    check!(-0E0, -0.0);
-    check!(1E0, 1.0);
-    check!(-1E0, -1.0);
+    assert_eq!(0E0, 0.0);
+    assert_eq!(print(0E0), stringify!(0E0));
+    assert_eq!(pretty(0f64), stringify!(0));
+
+    assert_eq!(-0E0, -0.0);
+    assert_eq!(print(-0E0), concat!("-", stringify!(0E0)));
+    assert_eq!(pretty(-0f64), concat!("-", stringify!(0)));
+
+    assert_eq!(1E0, 1.0);
+    assert_eq!(print(1E0), stringify!(1E0));
+    assert_eq!(pretty(1f64), stringify!(1));
+
+    assert_eq!(-1E0, -1.0);
+    assert_eq!(print(-1E0), concat!("-", stringify!(1E0)));
+    assert_eq!(pretty(-1f64), concat!("-", stringify!(1)));
+
     assert_eq!(print(f64::NAN), "NaN");
     assert_eq!(print(f64::INFINITY), "Infinity");
     assert_eq!(print(f64::NEG_INFINITY), "-Infinity");
@@ -90,7 +106,7 @@ fn test_switch_to_subnormal() {
 #[test]
 fn test_min_and_max() {
     assert_eq!(f64::from_bits(0x7fefffffffffffff), 1.7976931348623157e308);
-    check!(1.7976931348623157E308, 1.7976931348623157e308);
+    check!(1.7976931348623157E308, 1.7976931348623157e+308);
     assert_eq!(f64::from_bits(1), 5e-324);
     check!(5E-324, 5e-324);
 }
@@ -102,13 +118,26 @@ fn test_lots_of_trailing_zeros() {
 
 #[test]
 fn test_regression() {
-    check!(-2.109808898695963E16, -2.109808898695963e16);
+    assert_eq!(-2.109808898695963E16, -2.109808898695963e16);
+    assert_eq!(print(-2.109808898695963E16), concat!("-", stringify!(2.109808898695963E16)));
+    assert_eq!(pretty(-2.109808898695963E16), concat!("-", stringify!(21098088986959630)));
+
     check!(4.940656E-318, 4.940656e-318);
     check!(1.18575755E-316, 1.18575755e-316);
     check!(2.989102097996E-312, 2.989102097996e-312);
-    check!(9.0608011534336E15, 9060801153433600.0);
-    check!(4.708356024711512E18, 4.708356024711512e18);
-    check!(9.409340012568248E18, 9.409340012568248e18);
+
+    assert_eq!(9.0608011534336E15, 9060801153433600.0);
+    assert_eq!(print(9.0608011534336E15), stringify!(9.0608011534336E15));
+    assert_eq!(pretty(9.0608011534336E15f64), stringify!(9060801153433600));
+
+    assert_eq!(4.708356024711512E18, 4.708356024711512e18);
+    assert_eq!(print(4.708356024711512E18), stringify!(4.708356024711512E18));
+    assert_eq!(pretty(4.708356024711512E18f64), stringify!(4708356024711512000));
+
+    assert_eq!(9.409340012568248E18, 9.409340012568248e18);
+    assert_eq!(print(9.409340012568248E18), stringify!(9.409340012568248E18));
+    assert_eq!(pretty(9.409340012568248E18f64), stringify!(9409340012568248000));
+
     check!(1.2345678E0, 1.2345678);
 }
 
@@ -118,16 +147,16 @@ fn test_looks_like_pow5() {
     // 5 that fits, and an exponent that causes the computation for q to result
     // in 22, which is a corner case for Ryu.
     assert_eq!(f64::from_bits(0x4830F0CF064DD592), 5.764607523034235e39);
-    check!(5.764607523034235E39, 5.764607523034235e39);
+    check!(5.764607523034235E39, 5.764607523034235e+39);
     assert_eq!(f64::from_bits(0x4840F0CF064DD592), 1.152921504606847e40);
-    check!(1.152921504606847E40, 1.152921504606847e40);
+    check!(1.152921504606847E40, 1.152921504606847e+40);
     assert_eq!(f64::from_bits(0x4850F0CF064DD592), 2.305843009213694e40);
-    check!(2.305843009213694E40, 2.305843009213694e40);
+    check!(2.305843009213694E40, 2.305843009213694e+40);
 }
 
 #[test]
 fn test_output_length() {
-    check!(1E0, 1.0); // already tested in Basic
+    // check!(1E0, 1.0); // already tested in Basic
     check!(1.2E0, 1.2);
     check!(1.23E0, 1.23);
     check!(1.234E0, 1.234);
