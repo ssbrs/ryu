@@ -20,10 +20,10 @@
 //! # Examples
 //!
 //! ```rust
-//! extern crate ryu;
+//! extern crate ryu_ecmascript;
 //!
 //! fn main() {
-//!     let mut buffer = ryu::Buffer::new();
+//!     let mut buffer = ryu_ecmascript::Buffer::new();
 //!     let printed = buffer.format(1.234);
 //!     assert_eq!(printed, "1.234");
 //! }

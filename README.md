@@ -1,9 +1,10 @@
-# Ryū
+# ECMAScript Number.toString Ryū
 
-[![Build Status](https://api.travis-ci.org/dtolnay/ryu.svg?branch=master)](https://travis-ci.org/dtolnay/ryu)
-[![Latest Version](https://img.shields.io/crates/v/ryu.svg)](https://crates.io/crates/ryu)
-[![Rust Documentation](https://img.shields.io/badge/api-rustdoc-blue.svg)](https://docs.rs/ryu)
-[![Rustc Version 1.15+](https://img.shields.io/badge/rustc-1.15+-lightgray.svg)](https://blog.rust-lang.org/2017/02/02/Rust-1.15.html)
+Fork of the [ryu crate](https://crates.io/crates/ryu), with the safe API changed to implement the formatting rules specified in [ECMAScript 2015 ToString Applied to the Number Type](https://www.ecma-international.org/ecma-262/6.0/#sec-tostring-applied-to-the-number-type). It applies NOTE 2 to the algorithm and uses round-to-even to determine whether `s * (10 ^ (n - k))` is `m`.
+
+Original README (minus badges) below.
+
+---
 
 Pure Rust implementation of Ryū, an algorithm to quickly convert floating point
 numbers to decimal strings.

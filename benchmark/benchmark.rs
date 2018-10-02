@@ -1,5 +1,5 @@
 extern crate rand;
-extern crate ryu;
+extern crate ryu_ecmascript;
 
 use rand::{Rng, SeedableRng};
 
@@ -54,7 +54,7 @@ macro_rules! benchmark {
 
                 let t1 = std::time::SystemTime::now();
                 for _ in 0..ITERATIONS {
-                    throwaway += ryu::Buffer::new().format(f).len();
+                    throwaway += ryu_ecmascript::Buffer::new().format(f).len();
                 }
                 let duration = t1.elapsed().unwrap();
                 let nanos = duration.as_secs() * 1_000_000_000 + duration.subsec_nanos() as u64;

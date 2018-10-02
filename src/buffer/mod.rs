@@ -10,7 +10,7 @@ use no_panic::no_panic;
 /// ## Example
 ///
 /// ```rust
-/// let mut buffer = ryu::Buffer::new();
+/// let mut buffer = ryu_ecmascript::Buffer::new();
 /// let printed = buffer.format(1.234);
 /// assert_eq!(printed, "1.234");
 /// ```
@@ -25,9 +25,7 @@ impl Buffer {
     #[inline]
     #[cfg_attr(feature = "no-panic", no_panic)]
     pub fn new() -> Self {
-        Buffer {
-            bytes: unsafe { mem::uninitialized() },
-        }
+        Buffer { bytes: unsafe { mem::uninitialized() } }
     }
 
     /// Print a floating point number into this buffer and return a reference to
@@ -66,7 +64,7 @@ impl Default for Buffer {
 }
 
 /// A floating point number, f32 or f64, that can be written into a
-/// [`ryu::Buffer`][Buffer].
+/// [`ryu_ecmascript::Buffer`][Buffer].
 ///
 /// This trait is sealed and cannot be implemented for types outside of the
 /// `ryu` crate.

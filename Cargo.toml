@@ -1,11 +1,11 @@
 [package]
-name = "ryu"
-version = "0.2.6"
-authors = ["David Tolnay <dtolnay@gmail.com>"]
+name = "ryu-ecmascript"
+version = "0.1.0"
+authors = ["David Tolnay <dtolnay@gmail.com>", "Aljoscha Meyer"]
 license = "Apache-2.0 OR BSL-1.0"
-description = "Fast floating point to string conversion"
-repository = "https://github.com/dtolnay/ryu"
-documentation = "https://docs.rs/ryu"
+description = "Fast floating point to string conversion, suitable for ECMAScript NumberToString"
+repository = "https://github.com/ssbrs/ryu"
+documentation = "https://docs.rs/ryu-ecmascript"
 readme = "README.md"
 build = "build.rs"
 
@@ -26,6 +26,3 @@ no-panic = { version = "0.1", optional = true }
 [dev-dependencies]
 num_cpus = "1.8"
 rand = "0.5"
-
-[badges]
-travis-ci = { repository = "dtolnay/ryu" }

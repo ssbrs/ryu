@@ -19,8 +19,8 @@ pub unsafe fn d2s_buffered_n(f: f64, result: *mut u8) -> usize {
     let bits = mem::transmute::<f64, u64>(f);
     let sign = ((bits >> (DOUBLE_MANTISSA_BITS + DOUBLE_EXPONENT_BITS)) & 1) != 0;
     let ieee_mantissa = bits & ((1u64 << DOUBLE_MANTISSA_BITS) - 1);
-    let ieee_exponent =
-        (bits >> DOUBLE_MANTISSA_BITS) as u32 & ((1u32 << DOUBLE_EXPONENT_BITS) - 1);
+    let ieee_exponent = (bits >> DOUBLE_MANTISSA_BITS) as u32 &
+                        ((1u32 << DOUBLE_EXPONENT_BITS) - 1);
 
     let mut index = 0isize;
     if sign {
@@ -76,10 +76,8 @@ pub unsafe fn d2s_buffered_n(f: f64, result: *mut u8) -> usize {
         *result.offset(index) = *result.offset(index + 1);
         *result.offset(index + 1) = b'.';
         *result.offset(index + length + 1) = b'e';
-        index as usize
-            + length as usize
-            + 2
-            + write_exponent3(kk - 1, result.offset(index + length + 2))
+        index as usize + length as usize + 2 +
+        write_exponent3(kk - 1, result.offset(index + length + 2))
     }
 }
 
@@ -89,8 +87,8 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
     let bits = mem::transmute::<f32, u32>(f);
     let sign = ((bits >> (FLOAT_MANTISSA_BITS + FLOAT_EXPONENT_BITS)) & 1) != 0;
     let ieee_mantissa = bits & ((1u32 << FLOAT_MANTISSA_BITS) - 1);
-    let ieee_exponent =
-        ((bits >> FLOAT_MANTISSA_BITS) & ((1u32 << FLOAT_EXPONENT_BITS) - 1)) as u32;
+    let ieee_exponent = ((bits >> FLOAT_MANTISSA_BITS) & ((1u32 << FLOAT_EXPONENT_BITS) - 1)) as
+                        u32;
 
     let mut index = 0isize;
     if sign {
@@ -146,9 +144,7 @@ pub unsafe fn f2s_buffered_n(f: f32, result: *mut u8) -> usize {
         *result.offset(index) = *result.offset(index + 1);
         *result.offset(index + 1) = b'.';
         *result.offset(index + length + 1) = b'e';
-        index as usize
-            + length as usize
-            + 2
-            + write_exponent2(kk - 1, result.offset(index + length + 2))
+        index as usize + length as usize + 2 +
+        write_exponent2(kk - 1, result.offset(index + length + 2))
     }
 }

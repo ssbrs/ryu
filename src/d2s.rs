@@ -553,7 +553,7 @@ unsafe fn to_chars(v: FloatingDecimal64, sign: bool, result: *mut u8) -> usize {
 ///
 /// unsafe {
 ///     let mut buffer: [u8; 24] = std::mem::uninitialized();
-///     let n = ryu::raw::d2s_buffered_n(f, &mut buffer[0]);
+///     let n = ryu_ecmascript::raw::d2s_buffered_n(f, &mut buffer[0]);
 ///     let s = std::str::from_utf8_unchecked(&buffer[..n]);
 ///     assert_eq!(s, "1.234E0");
 /// }

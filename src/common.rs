@@ -50,12 +50,11 @@ pub fn log10_pow5(e: i32) -> i32 {
 }
 
 #[cfg_attr(feature = "no-panic", inline)]
-pub unsafe fn copy_special_str(
-    result: *mut u8,
-    sign: bool,
-    exponent: bool,
-    mantissa: bool,
-) -> usize {
+pub unsafe fn copy_special_str(result: *mut u8,
+                               sign: bool,
+                               exponent: bool,
+                               mantissa: bool)
+                               -> usize {
     if mantissa {
         ptr::copy_nonoverlapping(b"NaN".as_ptr(), result, 3);
         return 3;

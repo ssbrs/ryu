@@ -19,7 +19,7 @@
 // KIND, either express or implied.
 
 extern crate rand;
-extern crate ryu;
+extern crate ryu_ecmascript;
 
 #[macro_use]
 mod macros;
@@ -28,13 +28,13 @@ use std::{f64, str};
 
 fn print(f: f64) -> String {
     let mut bytes = [0u8; 24];
-    let n = unsafe { ryu::raw::d2s_buffered_n(f, &mut bytes[0]) };
+    let n = unsafe { ryu_ecmascript::raw::d2s_buffered_n(f, &mut bytes[0]) };
     let s = str::from_utf8(&bytes[..n]).unwrap();
     s.to_owned()
 }
 
 fn pretty(f: f64) -> String {
-    ryu::Buffer::new().format(f).to_owned()
+    ryu_ecmascript::Buffer::new().format(f).to_owned()
 }
 
 #[test]
@@ -53,10 +53,10 @@ fn test_ryu() {
 #[test]
 fn test_random() {
     let mut bytes = [0u8; 24];
-    let mut buffer = ryu::Buffer::new();
+    let mut buffer = ryu_ecmascript::Buffer::new();
     for _ in 0..1000000 {
         let f = rand::random();
-        let n = unsafe { ryu::raw::d2s_buffered_n(f, &mut bytes[0]) };
+        let n = unsafe { ryu_ecmascript::raw::d2s_buffered_n(f, &mut bytes[0]) };
         assert_eq!(f, str::from_utf8(&bytes[..n]).unwrap().parse().unwrap());
         assert_eq!(f, buffer.format(f).parse().unwrap());
     }
@@ -67,7 +67,7 @@ fn test_non_finite() {
     for i in 0u64..1 << 23 {
         let f = f64::from_bits((((1 << 11) - 1) << 52) + (i << 29));
         assert!(!f.is_finite(), "f={}", f);
-        ryu::Buffer::new().format(f);
+        ryu_ecmascript::Buffer::new().format(f);
     }
 }
 
