@@ -16,7 +16,7 @@ use no_panic::no_panic;
 /// ```
 #[derive(Copy, Clone)]
 pub struct Buffer {
-    bytes: [u8; 24],
+    bytes: [u8; 25],
 }
 
 impl Buffer {
